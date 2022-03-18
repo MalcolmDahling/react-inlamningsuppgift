@@ -1,0 +1,25 @@
+.wrapper{
+    padding:10px;
+    margin:auto;
+    width:60%;
+
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    justify-content:center;
+}
+
+.animal{
+    flex-basis:22%;
+
+    padding:10px;
+    border:1px solid black;
+    width:fit-content;
+    text-align:center;
+    text-decoration:none;
+    color:black;
+}
+
+.animal img{
+    width:200px;
+}
