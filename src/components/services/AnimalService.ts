@@ -1,8 +1,12 @@
 import axios from "axios";
 
-export function AnimalService(){
-    axios.get('https://animals.azurewebsites.net/api/animals')
+export async function AnimalService(){
+
+    if(!localStorage.getItem('animals')){
+        
+        axios.get('https://animals.azurewebsites.net/api/animals')
         .then(response => {
             localStorage.setItem('animals', JSON.stringify(response.data));
         });
+    }
 }

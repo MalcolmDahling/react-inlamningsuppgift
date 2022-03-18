@@ -7,6 +7,7 @@ export function Home(){
     AnimalService();
 
     let animals = JSON.parse( localStorage.getItem('animals') || '' ).map( (animal:IAnimal) => {
+        
         return(
             <a key={animal.id} className="animal" href={"animal/" + animal.id}>
                 <p>{animal.name}</p>
@@ -23,3 +24,4 @@ export function Home(){
         </div>
     );
 }
+
