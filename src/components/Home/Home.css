@@ -1,4 +1,4 @@
-.wrapper{
+.wrapper0{
     padding:10px;
     margin:auto;
     width:60%;
@@ -9,7 +9,7 @@
     justify-content:center;
 }
 
-.animal{
+.animal0{
     flex-basis:22%;
 
     padding:10px;
@@ -20,6 +20,6 @@
     color:black;
 }
 
-.animal img{
+.animal0 img{
     width:200px;
 }
