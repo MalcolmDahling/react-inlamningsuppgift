@@ -10,40 +10,61 @@ export function Animal(){
     let {id} = useParams();
 
     const [animals, setAnimals] = useState<IAnimal[]>([]);
+    const [disableButton, setDisableButton] = useState(false);
+
+    let animalNeedsFood:boolean = false;
+    let threeHours = 3 * 60 * 60 * 1000;
 
 
     useEffect(() => {
         axios.get<IAnimal[]>('https://animals.azurewebsites.net/api/animals')
             .then(response => {
-            if(!localStorage.getItem('animals')){
-                localStorage.setItem('animals', JSON.stringify(response.data));
-            }
 
 
-            setAnimals( JSON.parse( localStorage.getItem('animals') || '' ).map( (animal:IAnimal, i:number) => {
+                if(!localStorage.getItem('animals')){
+                    localStorage.setItem('animals', JSON.stringify(response.data));
+                }
+
+                
+
+                for(let i = 0; i < response.data.length; i++){
+
+                    if(i+1 == +id!){
+
         
-                if(i+1 == +id!){
-                    return(
-                        <div className="animal1" key={i}>
-                            <p>{animal.name}</p>
-                            <img src={animal.imageUrl}></img>
-                            <p>Latinskt namn: {animal.latinName}</p>
-                            <p>Född: {animal.yearOfBirth}</p>
-                            <p>Beskrivning: {animal.longDescription}</p>
-                            <p>Medicin: {animal.medicine}</p>
-                            <p>Har ätit: { animal.isFed ? 'Ja' : 'Nej' }</p>
-                            <p>Senast ätit: {animal.lastFed}</p>
-
-                            { !animal.isFed && <input type="button" value="Mata djur" onClick={feedAnimal}></input> }
-                            { animal.isFed && <input type="button" value="Mata djur" disabled></input> }
-                        </div>
-                    );
+                        console.log( new Date().getTime() - new Date(response.data[i].lastFed).getTime() > threeHours );
+                    }
                 }
                 
-            }));
+
+
+                setAnimals( JSON.parse( localStorage.getItem('animals') || '' ).map( (animal:IAnimal, i:number) => {
+            
+                    if(i+1 == +id!){
+                        return(
+                            <div className="animal1" key={i}>
+                                <p>{animal.name}</p>
+                                <img src={animal.imageUrl}></img>
+                                <p>Latinskt namn: {animal.latinName}</p>
+                                <p>Född: {animal.yearOfBirth}</p>
+                                <p>Beskrivning: {animal.longDescription}</p>
+                                <p>Medicin: {animal.medicine}</p>
+                                <p>Har ätit: { animal.isFed ? 'Ja' : 'Nej' }</p>
+                                <p>Senast ätit: {animal.lastFed}</p>
+
+                                { !animal.isFed && <input type="button" value="Mata djur" onClick={feedAnimal}></input> }
+                                { animal.isFed && <input type="button" value="Mata djur" disabled></input> }
+                            </div>
+                        );
+                    }
+                    
+                }));
+
+
         });
-    }, []);
-  
+    }, [disableButton]);
+
+
 
 
 
@@ -55,11 +76,15 @@ export function Animal(){
             if(i+1 == +id!){
 
                 ls[i].isFed = true;
-                ls[i].lastFed = new Date;
-                
+                ls[i].lastFed = new Date();
+
                 localStorage.setItem('animals', JSON.stringify(ls));
+
+                setDisableButton(true);
             }
         }
+
+        
     }
 
 
