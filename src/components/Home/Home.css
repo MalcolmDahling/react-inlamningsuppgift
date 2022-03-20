@@ -23,3 +23,9 @@
 .animal0 img{
     width:200px;
 }
+
+.notificationContainer{
+    position:absolute;
+    top:10px;
+    left:10px;
+}

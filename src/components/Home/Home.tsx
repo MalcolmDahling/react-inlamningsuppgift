@@ -1,11 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { IAnimal } from "../../models/IAnimal";
+import { Notification } from "../Notification/Notification";
 import './Home.css';
 
 export function Home(){
 
     const [animals, setAnimals] = useState<IAnimal[]>([]);
+
+    const [notification, setNotification] = useState('');
 
 
     useEffect(() => {
@@ -14,6 +17,8 @@ export function Home(){
             if(!localStorage.getItem('animals')){
                 localStorage.setItem('animals', JSON.stringify(response.data));
             }
+
+            setNotification(Notification());
 
 
             setAnimals( JSON.parse( localStorage.getItem('animals') || '' ).map( (animal:IAnimal) => {
@@ -35,9 +40,15 @@ export function Home(){
 
 
     return(
-        <div className="wrapper0">
-            {animals}
-        </div>
+        <>
+            <div className="wrapper0">
+                {animals}
+            </div>
+
+            <div className="notificationContainer">
+                {notification}
+            </div>
+        </>
     );
 }
 

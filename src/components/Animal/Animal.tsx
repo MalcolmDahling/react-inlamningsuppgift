@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { IAnimal } from "../../models/IAnimal";
+import { Notification } from "../Notification/Notification";
 
 import './Animal.css';
 
@@ -12,9 +13,7 @@ export function Animal(){
     const [animals, setAnimals] = useState<IAnimal[]>([]);
     const [disableButton, setDisableButton] = useState(false);
 
-    let animalNeedsFood:boolean = false;
-    let threeHours = 3 * 60 * 60 * 1000;
-
+    const [notification, setNotification] = useState('');
 
     useEffect(() => {
         axios.get<IAnimal[]>('https://animals.azurewebsites.net/api/animals')
@@ -25,32 +24,28 @@ export function Animal(){
                     localStorage.setItem('animals', JSON.stringify(response.data));
                 }
 
-                
-
-                for(let i = 0; i < response.data.length; i++){
-
-                    if(i+1 == +id!){
-
-        
-                        console.log( new Date().getTime() - new Date(response.data[i].lastFed).getTime() > threeHours );
-                    }
-                }
-                
+                setNotification(Notification());
 
 
                 setAnimals( JSON.parse( localStorage.getItem('animals') || '' ).map( (animal:IAnimal, i:number) => {
             
                     if(i+1 == +id!){
+
+                        //not fed in 3 hours
+                        if( new Date().getTime() - new Date(animal.lastFed).getTime() > 3 * 60 * 60 * 1000 ){
+                            animal.isFed = false;
+                        }
+
                         return(
                             <div className="animal1" key={i}>
-                                <p>{animal.name}</p>
+                                <p><strong>{animal.name}</strong></p>
                                 <img src={animal.imageUrl}></img>
-                                <p>Latinskt namn: {animal.latinName}</p>
-                                <p>Född: {animal.yearOfBirth}</p>
-                                <p>Beskrivning: {animal.longDescription}</p>
-                                <p>Medicin: {animal.medicine}</p>
-                                <p>Har ätit: { animal.isFed ? 'Ja' : 'Nej' }</p>
-                                <p>Senast ätit: {animal.lastFed}</p>
+                                <p><strong>Latinskt namn:</strong> {animal.latinName}</p>
+                                <p><strong>Född:</strong> {animal.yearOfBirth}</p>
+                                <p><strong>Beskrivning:</strong> {animal.longDescription}</p>
+                                <p><strong>Medicin:</strong> {animal.medicine}</p>
+                                <p><strong>Har ätit:</strong> { animal.isFed ? 'Ja' : 'Nej' }</p>
+                                <p><strong>Senast ätit:</strong> {animal.lastFed}</p>
 
                                 { !animal.isFed && <input type="button" value="Mata djur" onClick={feedAnimal}></input> }
                                 { animal.isFed && <input type="button" value="Mata djur" disabled></input> }
@@ -91,8 +86,14 @@ export function Animal(){
 
 
     return(
-        <div className="wrapper1">
-            {animals}
-        </div>
+        <>
+            <div className="wrapper1">
+                {animals}
+            </div>
+
+            <div className="notificationContainer">
+                {notification}
+            </div>
+        </>
     );
 }

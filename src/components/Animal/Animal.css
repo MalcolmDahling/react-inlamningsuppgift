@@ -8,3 +8,9 @@
 .animal1 img{
     width:500px;
 }
+
+.notificationContainer{
+    position:absolute;
+    top:10px;
+    left:10px;
+}
