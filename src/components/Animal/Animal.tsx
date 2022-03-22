@@ -1,7 +1,7 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { IAnimal } from "../../models/IAnimal";
-import { Fetch } from "../Fetch/Fetch";
 import { Notification } from "../Notification/Notification";
 
 import './Animal.css';
@@ -11,9 +11,8 @@ export function Animal(){
     let {id} = useParams();
 
     const [animal, setAnimal] = useState([]);
-    const [disableButton, setDisableButton] = useState(false);
     const [notification, setNotification] = useState('');
-
+    const [disableButton, setDisableButton] = useState(false);
 
 
     useEffect(() => {
@@ -26,11 +25,12 @@ export function Animal(){
 
         else{
 
-            Fetch.then(data => {
-                localStorage.setItem( 'animals', JSON.stringify(data) );
-                setNotification(Notification());
-                setSetAnimal();
-            })
+            axios.get<IAnimal[]>('https://animals.azurewebsites.net/api/animals')
+                .then(response => {
+                    localStorage.setItem( 'animals', JSON.stringify(response.data) );
+                    setNotification(Notification());
+                    setSetAnimal();
+            });
         }
 
         

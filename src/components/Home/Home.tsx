@@ -1,6 +1,6 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { IAnimal } from "../../models/IAnimal";
-import { Fetch } from "../Fetch/Fetch";
 import { Notification } from "../Notification/Notification";
 import './Home.css';
 
@@ -20,11 +20,12 @@ export function Home(){
 
         else{
 
-            Fetch.then(data => {
-                localStorage.setItem( 'animals', JSON.stringify(data) );
-                setNotification(Notification());
-                setSetAnimals();
-            })
+            axios.get<IAnimal[]>('https://animals.azurewebsites.net/api/animals')
+                .then(response => {
+                    localStorage.setItem( 'animals', JSON.stringify(response.data) );
+                    setNotification(Notification());
+                    setSetAnimals();
+            });
         }
 
     },[]);
