@@ -1,42 +1,51 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { IAnimal } from "../../models/IAnimal";
+import { Fetch } from "../Fetch/Fetch";
 import { Notification } from "../Notification/Notification";
 import './Home.css';
 
 export function Home(){
 
-    const [animals, setAnimals] = useState<IAnimal[]>([]);
-
+    const [animals, setAnimals] = useState([]);
     const [notification, setNotification] = useState('');
 
 
     useEffect(() => {
-        axios.get<IAnimal[]>('https://animals.azurewebsites.net/api/animals')
-        .then(response => {
-            if(!localStorage.getItem('animals')){
-                localStorage.setItem('animals', JSON.stringify(response.data));
-            }
+
+        if(localStorage.getItem('animals')){
 
             setNotification(Notification());
+            setSetAnimals();
+        }
+
+        else{
+
+            Fetch.then(data => {
+                localStorage.setItem( 'animals', JSON.stringify(data) );
+                setNotification(Notification());
+                setSetAnimals();
+            })
+        }
+
+    },[]);
 
 
-            setAnimals( JSON.parse( localStorage.getItem('animals') || '' ).map( (animal:IAnimal) => {
+
+    function setSetAnimals(){
+
+        setAnimals( JSON.parse( localStorage.getItem('animals') || '' ).map( (animal:IAnimal) => {
         
-                return(
-                    <a key={animal.id} className="animal0" href={"animal/" + animal.id}>
-                        <p>{animal.name}</p>
-                        <img src={animal.imageUrl}></img>
-                        <p>{animal.shortDescription}</p>
-                    </a>
-                );
-            }));
-        });
-    }, []);
+            return(
+                <a key={animal.id} className="animal0" href={"animal/" + animal.id}>
+                    <p>{animal.name}</p>
+                    <img src={animal.imageUrl}></img>
+                    <p>{animal.shortDescription}</p>
+                </a>
+            );
+        }));
+    }
     
     
-
-
 
 
     return(
